@@ -35,8 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import httpStatus from "http-status";
-import * as todoRepository from "../repositories/todo-repository.js";
-export function getTicketTypes(req, res) {
+import * as todoRepository from "../repositories/todo-repository";
+export function getList(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         var list;
         return __generator(this, function (_a) {
@@ -46,6 +46,28 @@ export function getTicketTypes(req, res) {
                     return [2 /*return*/, res.sendStatus(httpStatus.NOT_FOUND)];
                 }
                 return [2 /*return*/, res.status(httpStatus.OK).send(list)];
+            }
+            catch (error) {
+                return [2 /*return*/, res.sendStatus(httpStatus.NOT_FOUND)];
+            }
+            return [2 /*return*/];
+        });
+    });
+}
+export function postNewItem(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var newItem, list;
+        return __generator(this, function (_a) {
+            newItem = req.body;
+            if (!newItem.todo || !newItem.deadline) {
+                return [2 /*return*/, res.sendStatus(httpStatus.BAD_REQUEST)];
+            }
+            try {
+                list = todoRepository.createNewItem(newItem);
+                if (!list) {
+                    return [2 /*return*/, res.sendStatus(httpStatus.NOT_FOUND)];
+                }
+                return [2 /*return*/, res.status(httpStatus.CREATED).send(list)];
             }
             catch (error) {
                 return [2 /*return*/, res.sendStatus(httpStatus.NOT_FOUND)];

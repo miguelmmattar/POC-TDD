@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
-import { todoRouter } from "./routers/todo-router.js";
+import { todoRouter } from "./routers/todo-router";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ const app = express();
 app
   .use(cors())
   .use(express.json())
-  .use(todoRouter);
+  .use("/todo", todoRouter);
 
 app.get("/", (req: Request, res: Response) => res.sendStatus(200));
 

@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { faker } from "@faker-js/faker";
-import { populateList } from "../../src/repositories/todo-repository.js";
+import { populateList } from "../../src/repositories/todo-repository";
 export function createTodoList() {
     return populateList([{
             todo: faker.lorem.sentence(),
@@ -48,4 +48,10 @@ export function createEmptyTodoList() {
             return [2 /*return*/, populateList([])];
         });
     });
+}
+export function createTodoItem() {
+    return {
+        todo: faker.lorem.sentence(),
+        deadline: faker.date.future().toISOString()
+    };
 }

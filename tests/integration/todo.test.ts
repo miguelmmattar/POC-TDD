@@ -1,6 +1,6 @@
-import { app, init } from "../../src/index.js";
-import { deleteAllItems } from "../../src/repositories/todo-repository.js";
-import { createTodoList, createEmptyTodoList } from "../factories/todo-factory.js";
+import { app, init } from "../../src/index";
+import { deleteList } from "../../src/repositories/todo-repository";
+import { createTodoList, createEmptyTodoList, createTodoItem } from "../factories/todo-factory";
 import httpStatus from "http-status";
 import supertest from "supertest";
 
@@ -9,7 +9,7 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-    deleteAllItems(); 
+    deleteList(); 
 });
 
 const server = supertest(app);
@@ -30,7 +30,7 @@ describe("GET /todo", () => {
         expect(response.body).toEqual([]);
     });
 
-    it("should respond with status 200 and existing todoList data when there are no items on the list", async () => {
+    it("should respond with status 200 and existing todoList data when there are items on the list", async () => {
         const list = createTodoList();
         
         const response = await server.get("/todo");
@@ -41,4 +41,32 @@ describe("GET /todo", () => {
             deadline: list[0].deadline,
         }]);
     });
-})
+});
+
+describe("POST /todo", () => {
+    it("should respond with status 400 if no body is passed", async () => {
+        const response = await server.post("/todo");
+
+        expect(response.status).toEqual(httpStatus.BAD_REQUEST);
+    });
+
+    it("should respond with status 404 if list doesnt exist", async () => {
+        const newItem = createTodoItem();
+        
+        const response = await server.post("/todo").send(newItem);
+    
+        expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it("should respond with status 201 and correct todoList data", async () => {
+        const newItem = createTodoItem();
+        createEmptyTodoList();
+        const response = await server.post("/todo").send(newItem);
+    
+        expect(response.status).toBe(httpStatus.CREATED);
+        expect(response.body).toEqual([{
+            todo: newItem.todo,
+            deadline: newItem.deadline,
+        }]);
+    });
+});

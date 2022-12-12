@@ -34,9 +34,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { app, init } from "../../src/index.js";
-import { deleteAllItems } from "../../src/repositories/todo-repository.js";
-import { createTodoList, createEmptyTodoList } from "../factories/todo-factory.js";
+import { app, init } from "../../src/index";
+import { deleteList } from "../../src/repositories/todo-repository";
+import { createTodoList, createEmptyTodoList, createTodoItem } from "../factories/todo-factory";
 import httpStatus from "http-status";
 import supertest from "supertest";
 beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -50,7 +50,7 @@ beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); });
 beforeEach(function () {
-    deleteAllItems();
+    deleteList();
 });
 var server = supertest(app);
 describe("GET /todo", function () {
@@ -81,7 +81,7 @@ describe("GET /todo", function () {
             }
         });
     }); });
-    it("should respond with status 200 and existing todoList data when there are no items on the list", function () { return __awaiter(void 0, void 0, void 0, function () {
+    it("should respond with status 200 and existing todoList data when there are items on the list", function () { return __awaiter(void 0, void 0, void 0, function () {
         var list, response;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -94,6 +94,53 @@ describe("GET /todo", function () {
                     expect(response.body).toEqual([{
                             todo: list[0].todo,
                             deadline: list[0].deadline
+                        }]);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
+describe("POST /todo", function () {
+    it("should respond with status 400 if no body is passed", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, server.post("/todo")];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toEqual(httpStatus.BAD_REQUEST);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("should respond with status 404 if list doesnt exist", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var newItem, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    newItem = createTodoItem();
+                    return [4 /*yield*/, server.post("/todo").send(newItem)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(httpStatus.NOT_FOUND);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("should respond with status 201 and correct todoList data", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var newItem, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    newItem = createTodoItem();
+                    createEmptyTodoList();
+                    return [4 /*yield*/, server.post("/todo").send(newItem)];
+                case 1:
+                    response = _a.sent();
+                    expect(response.status).toBe(httpStatus.CREATED);
+                    expect(response.body).toEqual([{
+                            todo: newItem.todo,
+                            deadline: newItem.deadline
                         }]);
                     return [2 /*return*/];
             }

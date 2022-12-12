@@ -2,10 +2,16 @@ var list;
 function populateList(todoList) {
     return list = todoList;
 }
-function deleteAllItems() {
-    list = [];
+function deleteList() {
+    list = undefined;
 }
 function getList() {
     return list;
 }
-export { populateList, deleteAllItems, getList, };
+function createNewItem(newItem) {
+    if (list) {
+        list.push(newItem);
+    }
+    return list;
+}
+export { populateList, deleteList, getList, createNewItem, };

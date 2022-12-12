@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as todoController from "../controllers/todo-controller.js"
+import * as todoController from "../controllers/todo-controller";
 
 const todoRouter = Router();
 
 todoRouter
-  .get("/", todoController.getTicketTypes);
-  //.post("/", postBooking)
+  .get("/", todoController.getList)
+  .post("/", todoController.postNewItem);
 
 export { todoRouter };

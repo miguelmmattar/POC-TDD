@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { features } from "process";
-import { populateList } from "../../src/repositories/todo-repository.js";
+import { populateList } from "../../src/repositories/todo-repository";
 
 export function createTodoList() {
     return populateList([{
@@ -11,4 +11,11 @@ export function createTodoList() {
 
 export async function createEmptyTodoList() {
     return populateList([]);
+}
+
+export function createTodoItem() {
+    return {
+        todo: faker.lorem.sentence(),
+        deadline: faker.date.future().toISOString(),
+    };
 }
